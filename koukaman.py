@@ -147,7 +147,6 @@ while running:
 
 
 
-
 # ゲームクリアの表示
 if game_clear:
     win.fill(BLACK)
