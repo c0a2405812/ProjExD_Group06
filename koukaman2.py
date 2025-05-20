@@ -11,41 +11,38 @@ BLUE = (0,0,255)
 GREEN = (0,255,0)
 RED = (255,0,0)
 
-def enviroment():
-    """
-    ステージを定義
-    """
-    grid = ((0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-            (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0))
+GRID_SIZE = 64
+grid = [[0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],
+        [0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0],]
 
-    return grid
+# def draw_enviroment(screen,grid):
+#     for index, row in enumerate(grid):
+#         for j, item in enumerate(row):
+#             if item == 1:
+#                 rect = pygame.Rect(j* GRID_SIZE, index * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+#                 pygame.draw.rect(screen, RED, rect)
 
-def draw_enviroment(screen):
-    for i,row in enumerate(enviroment()):
-        for j,item in enumerate(row):
-            # ステージで「1」「2」と定義されている場所に線を描画
-            if item == 1:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
-                pygame.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
-            elif item == 2:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
-                pygame.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
+# def draw_grid(screen):
+#     for x in range(0, width, GRID_SIZE):
+#         pygame.draw.line(screen, WHITE, (x, 0), (x, height))
+#     for y in range(0, height, GRID_SIZE):
+#         pygame.draw.line(screen, WHITE, (0, y), (width, y))
 
 # ウィンドウの設定
 width, height = 640, 480
@@ -133,7 +130,7 @@ while running:
         running = False
 
     # 画面の描画
-    win.fill(black)
+    win.fill(BLAXK)
     pygame.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
     for enemy in enemies:
         pygame.draw.rect(win, red, (enemy["x"], enemy["y"], enemy_size, enemy_size))
@@ -143,10 +140,14 @@ while running:
     pygame.display.update()
     clock.tick(fps)
 
+    # WorldGrid生成
+    # draw_enviroment(win, grid)
+    # draw_grid(win)     
+
 # ゲームクリアの表示
 if game_clear:
-    win.fill(black)
-    text = font.render("Game Clear", True, white)
+    win.fill(BLAXK)
+    text = font.render("Game Clear", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
     pygame.display.update()
@@ -154,11 +155,12 @@ if game_clear:
 
 # ゲームオーバーの表示
 if game_over:
-    win.fill(black)
-    text = font.render("Game Over", True, white)
+    win.fill(BLAXK)
+    text = font.render("Game Over", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
     pygame.display.update()
     pygame.time.wait(3000)
+    
 
 pygame.quit()
