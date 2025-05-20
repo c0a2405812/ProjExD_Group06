@@ -15,7 +15,13 @@ RED = (255,0,0)
 
 
 class MusicPlayer:
-    def __init__(self, intro_file, loop_file):
+    """
+    BGMを追加するクラス
+    """
+    def __init__(self, intro_file, loop_file):  
+        """
+        BGMをロード、追加する関数
+        """
         self.intro_file = intro_file
         self.loop_file = loop_file
         pygame.mixer.init()
@@ -23,11 +29,17 @@ class MusicPlayer:
         pygame.mixer.music.play()
 
     def update(self):
+        """
+        BGMをループさせる関数
+        """
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(self.loop_file)
             pygame.mixer.music.play(-1)
 
     def stop(self):
+        """
+        BGMを止める関数
+        """
         pygame.mixer.music.stop()
 
     def play_once(self, filename):
