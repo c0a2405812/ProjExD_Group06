@@ -1,8 +1,10 @@
-import pygame
+import pygame as pg
 import random
+import pygame.time
+import pygame.mixer
 
 # Pygameの初期化
-pygame.init()
+pg.init()
 
 # 色をRGBで定義。RGB: Red, Green, Blueの値を0~255の256段階で表す
 BLACK = (0,0,0)
@@ -10,6 +12,28 @@ WHITE = (255,255,255)
 BLUE = (0,0,255)
 GREEN = (0,255,0)
 RED = (255,0,0)
+
+
+class MusicPlayer:
+    def __init__(self, intro_file, loop_file):
+        self.intro_file = intro_file
+        self.loop_file = loop_file
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.intro_file)
+        pygame.mixer.music.play()
+
+    def update(self):
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(self.loop_file)
+            pygame.mixer.music.play(-1)
+
+    def stop(self):
+        pygame.mixer.music.stop()
+
+    def play_once(self, filename):
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.play()
+
 
 def enviroment():
     """
@@ -41,16 +65,16 @@ def draw_enviroment(screen):
         for j,item in enumerate(row):
             # ステージで「1」「2」と定義されている場所に線を描画
             if item == 1:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
-                pygame.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
             elif item == 2:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
-                pygame.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
 
 # ウィンドウの設定
 width, height = 640, 480
-win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Pac-Man")
+win = pg.display.set_mode((width, height))
+pg.display.set_caption("Pac-Man")
 
 # 色の定義
 black = (0, 0, 0)
@@ -60,10 +84,10 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 
 # フォントの設定
-font = pygame.font.Font(None, 74)
+font = pg.font.Font(None, 74)
 
 # フレームレート
-clock = pygame.time.Clock()
+clock = pg.time.Clock()
 fps = 30
 
 # パックマンの設定
@@ -86,19 +110,23 @@ running = True
 game_clear = False
 game_over = False
 
+bgm = MusicPlayer("ex5/fig/levelintro.wav", "ex5/fig/default.wav")
+pygame.time.wait(5000)
+bgm.update()
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             running = False
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    
+    keys = pg.key.get_pressed()
+    if keys[pg.K_LEFT]:
         pacman_x -= pacman_speed
-    if keys[pygame.K_RIGHT]:
+    if keys[pg.K_RIGHT]:
         pacman_x += pacman_speed
-    if keys[pygame.K_UP]:
+    if keys[pg.K_UP]:
         pacman_y -= pacman_speed
-    if keys[pygame.K_DOWN]:
+    if keys[pg.K_DOWN]:
         pacman_y += pacman_speed
 
     # パックマンの画面外移動制限
@@ -134,31 +162,36 @@ while running:
 
     # 画面の描画
     win.fill(black)
-    pygame.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
+    pg.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
     for enemy in enemies:
-        pygame.draw.rect(win, red, (enemy["x"], enemy["y"], enemy_size, enemy_size))
+        pg.draw.rect(win, red, (enemy["x"], enemy["y"], enemy_size, enemy_size))
     for coin in coins:
-        pygame.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
+        pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
 
-    pygame.display.update()
+    pg.display.update()
     clock.tick(fps)
 
 # ゲームクリアの表示
 if game_clear:
+    bgm.stop()
+    bgm.play_once("ex5/fig/death.wav") 
     win.fill(black)
     text = font.render("Game Clear", True, white)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
-    pygame.display.update()
-    pygame.time.wait(3000)
+    pg.display.update()
+    pg.time.wait(3000)
 
 # ゲームオーバーの表示
 if game_over:
+    bgm.stop()  # 通常BGMを止める
+    bgm.play_once("ex5/fig/death.wav")  # ゲームオーバーBGMを1回だけ再生
     win.fill(black)
     text = font.render("Game Over", True, white)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
-    pygame.display.update()
-    pygame.time.wait(3000)
+    pg.display.update()
+    pg.time.wait(3000)
 
-pygame.quit()
+
+pg.quit()
