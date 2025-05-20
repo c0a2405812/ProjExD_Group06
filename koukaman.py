@@ -1,8 +1,8 @@
-import pygame
+import pygame as pg
 import random
 
-# Pygameの初期化
-pygame.init()
+# pgの初期化
+pg.init()
 
 # 色をRGBで定義。RGB: Red, Green, Blueの値を0~255の256段階で表す
 BLACK = (0,0,0)
@@ -41,16 +41,16 @@ def draw_enviroment(screen):
         for j,item in enumerate(row):
             # ステージで「1」「2」と定義されている場所に線を描画
             if item == 1:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
-                pygame.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
             elif item == 2:
-                pygame.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
-                pygame.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
+                pg.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
 
 # ウィンドウの設定
 width, height = 640, 480
-win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Pac-Man")
+win = pg.display.set_mode((width, height))
+pg.display.set_caption("Pac-Man")
 
 # 色の定義
 black = (0, 0, 0)
@@ -60,10 +60,10 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 
 # フォントの設定
-font = pygame.font.Font(None, 74)
+font = pg.font.Font(None, 74)
 
 # フレームレート
-clock = pygame.time.Clock()
+clock = pg.time.Clock()
 fps = 30
 
 # パックマンの設定
@@ -71,6 +71,7 @@ pacman_size = 20
 pacman_x = width // 2
 pacman_y = height // 2
 pacman_speed = 5
+pacman_hyper = 0 # アイテムの状態変数
 
 # 敵の設定
 enemy_size = 20
@@ -81,24 +82,29 @@ enemies = [{"x": random.randint(0, width - enemy_size), "y": random.randint(0, h
 coin_size = 10
 coins = [{"x": random.randint(0, width - coin_size), "y": random.randint(0, height - coin_size)} for _ in range(10)]
 
+# アイテムの設定
+item_size = 15
+item_frame = 0
+items = [{"x": random.randint(0, width - item_size), "y": random.randint(0, height - item_size)} for _ in range(1)]
+
 # ゲームループ
 running = True
 game_clear = False
 game_over = False
 
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             running = False
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    keys = pg.key.get_pressed()
+    if keys[pg.K_LEFT]:
         pacman_x -= pacman_speed
-    if keys[pygame.K_RIGHT]:
+    if keys[pg.K_RIGHT]:
         pacman_x += pacman_speed
-    if keys[pygame.K_UP]:
+    if keys[pg.K_UP]:
         pacman_y -= pacman_speed
-    if keys[pygame.K_DOWN]:
+    if keys[pg.K_DOWN]:
         pacman_y += pacman_speed
 
     # パックマンの画面外移動制限
@@ -121,26 +127,49 @@ while running:
         if abs(pacman_x - coin["x"]) < coin_size and abs(pacman_y - coin["y"]) < coin_size:
             coins.remove(coin)
 
+    # アイテムの収集
+    for item in items[:]:
+        if abs(pacman_x - item["x"]) < item_size and abs(pacman_y - item["y"]) < item_size:
+            items.remove(item)
+            pacman_hyper = 1
+            pacman_speed = 10
+            item_frame = 500
+
     # 敵との衝突判定
     for enemy in enemies:
         if abs(pacman_x - enemy["x"]) < enemy_size and abs(pacman_y - enemy["y"]) < enemy_size:
-            game_over = True
-            running = False
+            if pacman_hyper == 0:
+                game_over = True
+                running = False
+            if pacman_hyper == 1:
+                enemies.remove(enemy)
 
     # コインがすべて収集された場合
     if not coins:
         game_clear = True
         running = False
+    
+    # アイテムの効果時間
+    if pacman_hyper == 1:
+        item_frame -= 1
+    if item_frame == 0:
+        pacman_hyper = 0
+        pacman_speed = 5
+
+
 
     # 画面の描画
     win.fill(black)
-    pygame.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
+    pg.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
     for enemy in enemies:
-        pygame.draw.rect(win, red, (enemy["x"], enemy["y"], enemy_size, enemy_size))
+        pg.draw.rect(win, red, (enemy["x"], enemy["y"], enemy_size, enemy_size))
     for coin in coins:
-        pygame.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
+        pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
+    for item in items:
+        pg.draw.rect(win, white, (item["x"], item["y"], item_size, item_size))
+        
 
-    pygame.display.update()
+    pg.display.update()
     clock.tick(fps)
 
 # ゲームクリアの表示
@@ -149,8 +178,8 @@ if game_clear:
     text = font.render("Game Clear", True, white)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
-    pygame.display.update()
-    pygame.time.wait(3000)
+    pg.display.update()
+    pg.time.wait(3000)
 
 # ゲームオーバーの表示
 if game_over:
@@ -158,7 +187,7 @@ if game_over:
     text = font.render("Game Over", True, white)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     win.blit(text, text_rect)
-    pygame.display.update()
-    pygame.time.wait(3000)
+    pg.display.update()
+    pg.time.wait(3000)
 
-pygame.quit()
+pg.quit()
