@@ -94,12 +94,10 @@ class Life():
         self.font = pg.font.Font(None, 50)
         self.color = (255, 255, 255)
         self.value = 3
-        self.count = 0
+        self.count = 0 #　敵の上にいる秒数をカウント
         self.image = self.font.render(f"life: {self.value}", 0, self.color)
         self.rect = self.image.get_rect()
         self.rect.center = 80, height-50
-        # self.state2 = "normal"
-        # self.hyper_life2 = 0
     
     def update(self, screen: pg.Surface):
         """
@@ -107,10 +105,6 @@ class Life():
         引数 screen: 画面Surface
         """
         self.image = self.font.render(f"life: {self.value}", 0, self.color)
-        # if self.state2 == "hyper":
-        #     self.hyper_life2 -= 1
-        #     if self.hyper_life2 == 0:
-        #         self.state2 = "normal"
         screen.blit(self.image, self.rect)
 
 screen = pg.display.set_mode((width, height))
