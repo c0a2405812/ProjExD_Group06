@@ -2,12 +2,12 @@
 
 ## 実行環境の必要条件
 * python >= 3.10
-* pygame >= 2.1
+* pg >= 2.1
 
 ## ゲームの概要
 * パッ〇マン
 * マップに存在する餌を、ゴーストから逃げながら、全部食べよう！
-* 参考URL：[【Python】pygameでパックマン風のゲームを作ってみた](https://qiita.com/aramasa_ash/items/f8162190420c8bc9232f )
+* 参考URL：[【Python】pgでパックマン風のゲームを作ってみた](https://qiita.com/aramasa_ash/items/f8162190420c8bc9232f )
 
 ## ゲームの遊び方
 * 矢印キーでこうかとんを操作し、餌を食べよう
