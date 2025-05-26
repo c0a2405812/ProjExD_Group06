@@ -40,6 +40,7 @@ class Enemy(pg.sprite.Sprite):
         """
         super().__init__()
         self.image = pg.transform.rotozoom(pg.image.load("fig/ghost.png"),0,0.1)
+        self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()
         self.rect.centerx = random.randint(0, width - enemy_size)
         self.rect.centery = random.randint(0, height - enemy_size)        
