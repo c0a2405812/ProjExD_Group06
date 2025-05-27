@@ -1,26 +1,13 @@
-<<<<<<< HEAD
-=======
 import os
->>>>>>> C0A23094/GridGenerate
-import pygame as pg
 import random
-import os
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+import pygame as pg
 import pygame.time
 import pygame.mixer
 
-<<<<<<< HEAD
-# Pygameの初期化
-pg.init()
-# pgの初期化
-pg.init()
-=======
 # pgの初期化
 pg.init()
 # ファイルパスについて
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
->>>>>>> C0A23094/GridGenerate
 
 # 色をRGBで定義。RGB: Red, Green, Blueの値を0~255の256段階で表す
 BLACK = (0,0,0)
@@ -28,7 +15,6 @@ WHITE = (255,255,255)
 BLUE = (0,0,255)
 GREEN = (0,255,0)
 RED = (255,0,0)
-<<<<<<< HEAD
 YELLOW = (255,255,0)
 
 class Score:
@@ -60,38 +46,8 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     if obj_rct.top < 0 or height < obj_rct.bottom:
         tate = False
     return yoko, tate
-
-class Enemy(pg.sprite.Sprite):
-    """
-    敵（ゴースト）
-    """
-    def __init__(self):
-        """
-        敵初期化。Surfaceを作成
-        引数無し
-        """
-        super().__init__()
-        self.image = pg.transform.rotozoom(pg.image.load("fig/ghost.png"),0,0.1)
-        self.image.set_colorkey((0,0,0))
-        self.rect = self.image.get_rect()
-        self.rect.centerx = random.randint(0, width - enemy_size)
-        self.rect.centery = random.randint(0, height - enemy_size)        
-        
-    def update(self):
-        """
-        ゴーストの位置を更新
-        引数 screen :画面Surface
-        """
-        if self.rect.centerx < bird.rect.centerx:
-            self.rect.centerx += enemy_speed
-        elif self.rect.centerx > bird.rect.centerx:
-            self.rect.centerx -= enemy_speed
-        if self.rect.centery < bird.rect.centery:
-            self.rect.centery += enemy_speed
-        elif self.rect.centery > bird.rect.centery:
-            self.rect.centery -= enemy_speed
-       
-        
+    
+            
 
 class Bird(pg.sprite.Sprite):
     """
@@ -194,10 +150,8 @@ class MusicPlayer:
         pygame.mixer.music.load(filename)
         pygame.mixer.music.play()
 
-=======
 YELLOW = (255, 255, 0)
 GRAY = (100, 100, 100)
->>>>>>> C0A23094/GridGenerate
 
 
 def check_bound(obj_rct: pg.Rect, ) -> bool:
@@ -207,41 +161,6 @@ def check_bound(obj_rct: pg.Rect, ) -> bool:
     戻り値：オブジェクトの中心座標が白いかどうかの判定、もしくは
     横方向，縦方向のはみ出し判定結果（画面外、壁：False）
     """
-<<<<<<< HEAD
-    grid = (
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,3,1),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0),
-        (0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,2,0)
-    )
-    return grid
-
-
-def draw_enviroment(screen):
-    for i,row in enumerate(enviroment()):
-        for j,item in enumerate(row):
-            # ステージで「1」「2」と定義されている場所に線を描画
-            if item == 1:
-                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32+32,i*32], 3)
-                pg.draw.line(screen, BLUE , [j*32, i*32+32], [j*32+32,i*32+32], 3)
-            elif item == 2:
-                pg.draw.line(screen, BLUE , [j*32, i*32], [j*32,i*32+32], 3)
-                pg.draw.line(screen, BLUE , [j*32+32, i*32], [j*32+32,i*32+32], 3)
-=======
     # ↓ここに衝突判定を追加↓
     hantei =  True
     if screen.get_at((obj_rct.centerx,obj_rct.centery)) == (255,255,255,255):
@@ -517,24 +436,11 @@ class Life:
         """
         for i in range(self.value):
             screen.blit(self.image, (10 + i * 35, height - 30))
->>>>>>> C0A23094/GridGenerate
 
 # ウィンドウ設定
 width, height = 640, 480
-<<<<<<< HEAD
-win = pg.display.set_mode((width, height))
-pg.display.set_caption("Pac-Man")
-
-# 色の定義
-black = (0, 0, 0)
-white = (255, 255, 255)
-yellow = (255, 255, 0)
-red = (255, 0, 0)
-blue = (0, 0, 255)
-=======
 screen = pg.display.set_mode((width, height))
 pg.display.set_caption("Pac-Man")
->>>>>>> C0A23094/GridGenerate
 
 # フォントの設定
 font = pg.font.Font(None, 74)
@@ -553,13 +459,6 @@ bird = Bird(3,(width//2,height//2))
 
 # 敵のグループ作成
 emys = pg.sprite.Group()
-<<<<<<< HEAD
-# 敵の設定
-enemy_size = 20
-enemy_speed = 2
-for _ in range(3):
-    emys.add(Enemy())
-=======
 for _ in range(3):
     emys.add(Enemy())
 
@@ -590,42 +489,13 @@ for i in world.rect_list:
 result = random.choice(coins)
 coins.remove(result)
 items.append(result)
->>>>>>> C0A23094/GridGenerate
 
-
-# アイテムの設定
-item_size = 15
-item_frame = 0
-items = [{"x": random.randint(0, width - item_size), "y": random.randint(0, height - item_size)} for _ in range(1)]
 
 # ゲームループ
 running = True
 game_clear = False
 game_over = False
-score = Score()
 
-<<<<<<< HEAD
-class Life:
-    """
-    残機を表示させるクラス
-    """  
-    def __init__(self):
-        self.value = 3
-        self.count = 0  # 無敵時間（フレーム）
-        self.image = pg.image.load("fig/heart.png")
-        self.image = pg.transform.scale(self.image, (20, 20))
-
-    def update(self, screen):
-        for i in range(self.value):
-            screen.blit(self.image, (10 + i * 35, height - 40))
-
-life = Life()
-
-# メインループ
-bgm = MusicPlayer("fig/levelintro.wav", "fig/default.wav")
-pygame.time.wait(5000)
-bgm.update()
-=======
 # BGMの設定
 # bgm = MusicPlayer("ex5/fig/levelintro.wav", "ex5/fig/default.wav") 
 # pg.time.wait(5000) 
@@ -636,7 +506,6 @@ score = Score()
 # 残機の設定
 life = Life()
 
->>>>>>> C0A23094/GridGenerate
 while running:
 
     key_lst = pg.key.get_pressed()
@@ -645,49 +514,17 @@ while running:
         if event.type == pg.QUIT:
             running = False
 
-<<<<<<< HEAD
-   
-
-    # 無敵時間カウント
-    if life.count > 0:
-        life.count -= 1
-
-
-=======
->>>>>>> C0A23094/GridGenerate
     # コインの収集
     for coin in coins[:]:
         if abs(bird.rect.centerx - coin["x"]) < coin_size and abs(bird.rect.centery - coin["y"]) < coin_size:
             coins.remove(coin)
             score.value += 10
 
-<<<<<<< HEAD
-
-=======
->>>>>>> C0A23094/GridGenerate
     # アイテムの収集
     for item in items[:]:
         if abs(bird.rect.centerx - item["x"]) < item_size and abs(bird.rect.centery - item["y"]) < item_size:
             items.remove(item)
             bird.hyper = 1
-<<<<<<< HEAD
-            bird.speed = 10
-            item_frame = 500
-
-    # 敵との衝突判定
-    for enemy in pg.sprite.spritecollide(bird, emys, True): 
-            if bird.hyper == 1:
-                emys.remove(enemy)
-            if bird.hyper == 0:
-                #---------ライフを１減らし、０になったらゲームオーバー---------
-                if life.count == 0:
-                    life.value -= 1
-                    life.count = fps  # 無敵時間1秒
-                    if life.value == 0:
-                        game_over = True
-                        running = False
-                #------------------------------------------------------------
-=======
             bird.speed = 5
             item_frame = 500
 
@@ -708,7 +545,6 @@ while running:
         if bird.hyper == 1:
             enemy.kill()
             score.value += 50
->>>>>>> C0A23094/GridGenerate
 
     # コインがすべて収集された場合
     if not coins:
@@ -725,22 +561,6 @@ while running:
 
 
     # 画面の描画
-<<<<<<< HEAD
-    win.fill(black)
-    #pg.draw.rect(win, yellow, (bird.rect.centerx, bird.rect.centery, bird.size, bird.size))
-    for coin in coins:
-        pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
-    for item in items:
-        pg.draw.rect(win, red, (item["x"], item["y"], item_size, item_size))
-    
-    # こうかとんのupdate
-    bird.update(key_lst,win)
-    # 敵のupdate
-    emys.update()
-    emys.draw(win)
-    score.update(win)
-    life.update(win)
-=======
     screen.fill(BLACK)
     world.draw(screen)
     
@@ -765,44 +585,20 @@ while running:
     score.update(screen)
     # 残機のupdate
     life.update(screen)
->>>>>>> C0A23094/GridGenerate
     pg.display.update()
     clock.tick(fps)
 
 # ゲームクリアの表示
 if game_clear:
-<<<<<<< HEAD
-    bgm.stop()
-    bgm.play_once("fig/death.wav") 
-    win.fill(black)
-    text = font.render("Game Clear", True, white)
-    text_rect = text.get_rect(center=(width / 2, height / 2))
-    win.blit(text, text_rect)
-=======
     screen.fill(BLACK)
     text = font.render("Game Clear", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
     screen.blit(text, text_rect)
->>>>>>> C0A23094/GridGenerate
     pg.display.update()
     pg.time.wait(3000)
 
 # ゲームオーバーの表示
 if game_over:
-<<<<<<< HEAD
-    bgm.stop()  # 通常BGMを止める
-    bgm.play_once("fig/death.wav")  # ゲームオーバーBGMを1回だけ再生
-    win.fill(black)
-    text = font.render("Game Over", True, white)
-    text_rect = text.get_rect(center=(width / 2, height / 2))
-    win.blit(text, text_rect)
-    pg.display.update()
-    pg.time.wait(3000)
-
-
-pg.quit()
-pg.quit()
-=======
     screen.fill(BLACK)
     text = font.render("Game Over", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
@@ -811,4 +607,3 @@ pg.quit()
     pg.time.wait(3000)
 
 pg.quit()
->>>>>>> C0A23094/GridGenerate
