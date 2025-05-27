@@ -2,9 +2,9 @@ import os
 import pygame as pg
 import random
 
-
 # pgの初期化
 pg.init()
+
 # ファイルパスについて
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -14,6 +14,22 @@ WHITE = (255,255,255)
 BLUE = (0,0,255)
 GREEN = (0,255,0)
 RED = (255,0,0)
+
+class Score:
+    """
+    コイン取ったらスコア加算
+    """
+    def __init__(self):
+        self.font = pg.font.Font(None, 35)
+        self.color = (255, 255, 255)
+        self.value = 0
+        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = width/2, 15
+
+    def update(self, screen: pg.Surface):
+        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
+        screen.blit(self.image, self.rect)
 
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
@@ -58,8 +74,7 @@ class Enemy(pg.sprite.Sprite):
             self.rect.centery += enemy_speed
         elif self.rect.centery > bird.rect.centery:
             self.rect.centery -= enemy_speed
-        # self.rect = self.imgs.get_rect()
-        # screen.blit(self.image,self.rect)
+       
         
 
 class Bird(pg.sprite.Sprite):
@@ -187,10 +202,6 @@ fps = 30
 
 # パックマンの設定
 bird = Bird(3,(width//2,height//2))
-# pacman_size = 20
-# pacman_x = width // 2
-# pacman_y = height // 2
-# pacman_speed = 5
 
 # 敵のグループ作成
 emys = pg.sprite.Group()
@@ -208,7 +219,7 @@ coins = [{"x": random.randint(0, width - coin_size), "y": random.randint(0, heig
 running = True
 game_clear = False
 game_over = False
-
+score = Score()
 
 
 while running:
@@ -219,35 +230,13 @@ while running:
         if event.type == pg.QUIT:
             running = False
 
-    # keys = pg.key.get_pressed()
-    # if keys[pg.K_LEFT]:
-    #     pacman_x -= pacman_speed
-    # if keys[pg.K_RIGHT]:
-    #     pacman_x += pacman_speed
-    # if keys[pg.K_UP]:
-    #     pacman_y -= pacman_speed
-    # if keys[pg.K_DOWN]:
-    #     pacman_y += pacman_speed
-
-    # パックマンの画面外移動制限
-    # pacman_x = max(0, min(width - pacman_size, pacman_x))
-    # pacman_y = max(0, min(height - pacman_size, pacman_y))
-
-    # 敵の移動
-    # for enemy in enemies:
-    #     if enemy["x"] < pacman_x:
-    #         enemy["x"] += enemy_speed
-    #     elif enemy["x"] > pacman_x:
-    #         enemy["x"] -= enemy_speed
-    #     if enemy["y"] < pacman_y:
-    #         enemy["y"] += enemy_speed
-    #     elif enemy["y"] > pacman_y:
-    #         enemy["y"] -= enemy_speed
 
     # コインの収集
     for coin in coins[:]:
         if abs(bird.rect.centerx - coin["x"]) < coin_size and abs(bird.rect.centery - coin["y"]) < coin_size:
             coins.remove(coin)
+            score.value += 10
+
 
     # 敵との衝突判定
     for enemy in pg.sprite.spritecollide(bird, emys, True):        
@@ -262,7 +251,7 @@ while running:
 
     # 画面の描画
     win.fill(black)
-    # pg.draw.rect(win, yellow, (pacman_x, pacman_y, pacman_size, pacman_size))
+
     for coin in coins:
         pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
 
@@ -271,6 +260,7 @@ while running:
     # 敵のupdate
     emys.update()
     emys.draw(win)
+    score.update(win)
     pg.display.update()
     clock.tick(fps)
 
