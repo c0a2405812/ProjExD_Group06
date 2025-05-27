@@ -142,7 +142,7 @@ class Bird(pg.sprite.Sprite):
         self.image = self.imgs[self.dire]
         self.rect = self.image.get_rect()
         self.rect.center = xy
-        self.speed = 5
+        self.speed = 4
         self.hyper = 0
 
     def change_img(self, num: int, screen: pg.Surface):
@@ -385,7 +385,7 @@ while running:
         if abs(bird.rect.centerx - item["x"]) < item_size and abs(bird.rect.centery - item["y"]) < item_size:
             items.remove(item)
             bird.hyper = 1
-            bird.speed = 4
+            bird.speed = 6
             item_frame = 500
 
     if life.count > 0:
@@ -426,7 +426,7 @@ while running:
         item_frame -= 1
     if item_frame == 0:
         bird.hyper = 0
-        bird.speed = 6
+        bird.speed = 4
 
     # こうかとんのupdate
     bird.update(key_lst,screen)
