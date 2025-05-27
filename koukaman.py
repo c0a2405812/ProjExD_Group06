@@ -16,143 +16,20 @@ BLUE = (0,0,255)
 GREEN = (0,255,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
+GRAY = (100,100,100)
 
-class Score:
-    """
-    コイン取ったらスコア加算
-    """
-    def __init__(self):
-        self.font = pg.font.Font(None, 35)
-        self.color = (255, 255, 255)
-        self.value = 0
-        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
-        self.rect = self.image.get_rect()
-        self.rect.center = width/2, 15
-
-    def update(self, screen: pg.Surface):
-        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
-        screen.blit(self.image, self.rect)
-
-
-def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
-    """
-    オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
-    引数：こうかとんや爆弾，ビームなどのRect
-    戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
-    """
-    yoko, tate = True, True
-    if obj_rct.left < 0 or width < obj_rct.right:
-        yoko = False
-    if obj_rct.top < 0 or height < obj_rct.bottom:
-        tate = False
-    return yoko, tate
-    
-            
-
-class Bird(pg.sprite.Sprite):
-    """
-    ゲームキャラクター（こうかとん）に関するクラス
-    """
-    delta = {  # 押下キーと移動量の辞書
-        pg.K_UP: (0, -1),
-        pg.K_DOWN: (0, +1),
-        pg.K_LEFT: (-1, 0),
-        pg.K_RIGHT: (+1, 0),
-    }
-
-    def __init__(self, num: int, xy: tuple[int, int]):
-        """
-        こうかとん画像Surfaceを生成する
-        引数1 num：こうかとん画像ファイル名の番号
-        引数2 xy：こうかとん画像の位置座標タプル
-        """
-        super().__init__()
-        img0 = pg.transform.rotozoom(pg.image.load(f"fig/{num}.png"), 0, 0.9)
-        img = pg.transform.flip(img0, True, False)  # デフォルトのこうかとん
-        self.imgs = {
-            (+1, 0): img,  # 右
-            (+1, -1): pg.transform.rotozoom(img, 45, 0.9),  # 右上
-            (0, -1): pg.transform.rotozoom(img, 90, 0.9),  # 上
-            (-1, -1): pg.transform.rotozoom(img0, -45, 0.9),  # 左上
-            (-1, 0): img0,  # 左
-            (-1, +1): pg.transform.rotozoom(img0, 45, 0.9),  # 左下
-            (0, +1): pg.transform.rotozoom(img, -90, 0.9),  # 下
-            (+1, +1): pg.transform.rotozoom(img, -45, 0.9),  # 右下
-        }
-        self.dire = (+1, 0)
-        self.image = self.imgs[self.dire]
-        self.rect = self.image.get_rect()
-        self.rect.center = xy
-        self.speed = 5
-        self.hyper = 0
-
-    def change_img(self, num: int, screen: pg.Surface):
-        """
-        こうかとん画像を切り替え，画面に転送する
-        引数1 num：こうかとん画像ファイル名の番号
-        引数2 screen：画面Surface
-        """
-        self.image = pg.transform.rotozoom(pg.image.load(f"fig/{num}.png"), 0, 0.9)
-        screen.blit(self.image, self.rect)
-
-    def update(self, key_lst: list[bool], screen: pg.Surface):
-        """
-        押下キーに応じてこうかとんを移動させる
-        引数1 key_lst：押下キーの真理値リスト
-        引数2 screen：画面Surface
-        """
-        sum_mv = [0, 0]
-        for k, mv in __class__.delta.items():
-            if key_lst[k]:
-                sum_mv[0] += mv[0]
-                sum_mv[1] += mv[1]
-    
-        self.rect.move_ip(self.speed*sum_mv[0], self.speed*sum_mv[1])
-        if check_bound(self.rect) != (True, True):
-            self.rect.move_ip(-self.speed*sum_mv[0], -self.speed*sum_mv[1])
-        if not (sum_mv[0] == 0 and sum_mv[1] == 0):
-            self.dire = tuple(sum_mv)
-            self.image = self.imgs[self.dire]
-        screen.blit(self.image, self.rect)
-
-
-
-
-class MusicPlayer:
-    """
-    BGMを追加するクラス
-    """
-    def __init__(self, intro_file, loop_file):  
-        """
-        BGMをロード、追加する関数
-        """
-        self.intro_file = intro_file
-        self.loop_file = loop_file
-        pygame.mixer.init()
-        pygame.mixer.music.load(self.intro_file)
-        pygame.mixer.music.play()
-
-    def update(self):
-        """
-        BGMをループさせる関数
-        """
-        if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.load(self.loop_file)
-            pygame.mixer.music.play(-1)
-
-    def stop(self):
-        """
-        BGMを止める関数
-        """
-        pygame.mixer.music.stop()
-
-    def play_once(self, filename):
-        pygame.mixer.music.load(filename)
-        pygame.mixer.music.play()
-
-YELLOW = (255, 255, 0)
-GRAY = (100, 100, 100)
-
+# def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
+#     """
+#     オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
+#     引数：こうかとんや爆弾，ビームなどのRect
+#     戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
+#     """
+#     yoko, tate = True, True
+#     if obj_rct.left < 0 or width < obj_rct.right:
+#         yoko = False
+#     if obj_rct.top < 0 or height < obj_rct.bottom:
+#         tate = False
+#     return yoko, tate
 
 def check_bound(obj_rct: pg.Rect, ) -> bool:
     """
@@ -195,6 +72,22 @@ def check_bound2(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or height < rct.bottom:  # 画面外だったら
         tate = False
     return yoko, tate
+
+class Score:
+    """
+    コイン取ったらスコア加算
+    """
+    def __init__(self):
+        self.font = pg.font.Font(None, 35)
+        self.color = (255, 255, 255)
+        self.value = 0
+        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
+        self.rect = self.image.get_rect()
+        self.rect.center = width/2, 15
+
+    def update(self, screen: pg.Surface):
+        self.image = self.font.render(f"SCORE: {self.value}", 0, self.color)
+        screen.blit(self.image, self.rect)
 
 
 class Enemy(pg.sprite.Sprite):
@@ -497,9 +390,9 @@ game_clear = False
 game_over = False
 
 # BGMの設定
-# bgm = MusicPlayer("ex5/fig/levelintro.wav", "ex5/fig/default.wav") 
-# pg.time.wait(5000) 
-# bgm.update() 
+bgm = MusicPlayer("fig/levelintro.wav", "fig/default.wav") 
+pg.time.wait(5000) 
+bgm.update() 
 
 # スコアの設定
 score = Score()
@@ -558,8 +451,6 @@ while running:
         bird.hyper = 0
         bird.speed = 5
 
-
-
     # 画面の描画
     screen.fill(BLACK)
     world.draw(screen)
@@ -590,6 +481,8 @@ while running:
 
 # ゲームクリアの表示
 if game_clear:
+    bgm.stop()  # 通常BGMを止める 
+    bgm.play_once("fig/death.wav")  # ゲームオーバーBGMを1回だけ再生 
     screen.fill(BLACK)
     text = font.render("Game Clear", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
@@ -599,6 +492,8 @@ if game_clear:
 
 # ゲームオーバーの表示
 if game_over:
+    bgm.stop()  # 通常BGMを止める 
+    bgm.play_once("fig/death.wav")  # ゲームオーバーBGMを1回だけ再生 
     screen.fill(BLACK)
     text = font.render("Game Over", True, WHITE)
     text_rect = text.get_rect(center=(width / 2, height / 2))
