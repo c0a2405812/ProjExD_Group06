@@ -18,19 +18,6 @@ RED = (255,0,0)
 YELLOW = (255,255,0)
 GRAY = (100,100,100)
 
-# def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
-#     """
-#     オブジェクトが画面内or画面外を判定し，真理値タプルを返す関数
-#     引数：こうかとんや爆弾，ビームなどのRect
-#     戻り値：横方向，縦方向のはみ出し判定結果（画面内：True／画面外：False）
-#     """
-#     yoko, tate = True, True
-#     if obj_rct.left < 0 or width < obj_rct.right:
-#         yoko = False
-#     if obj_rct.top < 0 or height < obj_rct.bottom:
-#         tate = False
-#     return yoko, tate
-
 def check_bound(obj_rct: pg.Rect, ) -> bool:
     """
     オブジェクトが壁に接しているかどうか判定し，真理値を返す関数
@@ -104,25 +91,14 @@ class Enemy(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = random.randint(0,640)
         self.rect.centery = random.randint(0,480)
-        self.vx = 3
-        self.vy = 3
+        self.vx = 4
+        self.vy = 4
         
     def update(self):
         """
         ゴーストの位置を更新
         引数 screen :画面Surface
         """
-        # if self.rect.centerx < bird.rect.centerx:
-        #     self.rect.centerx += self.enemy_speed
-        # elif self.rect.centerx > bird.rect.centerx:
-        #     self.rect.centerx -= self.enemy_speed
-        # if self.rect.centery < bird.rect.centery:
-        #     self.rect.centery += self.enemy_speed
-        # elif self.rect.centery > bird.rect.centery:
-        #     self.rect.centery -= self.enemy_speed
-        # self.rect = self.imgs.get_rect()
-        # screen.blit(self.image,self.rect)
-
         self.rect.move_ip(self.vx, self.vy)  # 爆弾の移動
         yoko, tate = check_bound2(self.rect)
         if not yoko:  # 左右どちらかにはみ出ていたら
@@ -166,7 +142,7 @@ class Bird(pg.sprite.Sprite):
         self.image = self.imgs[self.dire]
         self.rect = self.image.get_rect()
         self.rect.center = xy
-        self.speed = 3
+        self.speed = 5
         self.hyper = 0
 
     def change_img(self, num: int, screen: pg.Surface):
@@ -192,16 +168,6 @@ class Bird(pg.sprite.Sprite):
     
         self.rect.move_ip(self.speed*sum_mv[0], self.speed*sum_mv[1])
         if check_bound(self.rect) != True: # 衝突判定による停止(False)
-            
-            # if Collision == 0:
-            #     print ("collision0")
-            # elif Collision == 1:
-            #     print ("collision1")
-            # elif Collision == 2:
-            #     print ("collision2")
-            # elif Collision == 3:
-            #     print ("collision3")
-            
             self.rect.move_ip(-self.speed*sum_mv[0], -self.speed*sum_mv[1])
 
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
@@ -347,12 +313,13 @@ world = World()
 worlds = pg.sprite.Group()
 worlds.draw(screen)
 
-# パックマンの設定
+# こうかとんインスタンス作成
 bird = Bird(3,(width//2,height//2))
 
 # 敵のグループ作成
+# 敵人数設定
 emys = pg.sprite.Group()
-for _ in range(3):
+for _ in range(5):
     emys.add(Enemy())
 
 # コインとアイテムの設定
@@ -378,11 +345,10 @@ Grid = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,],
                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,],]
 for i in world.rect_list:
     coins.append({"x": i[0], "y": i[1]})
-
-result = random.choice(coins)
-coins.remove(result)
-items.append(result)
-
+for _ in range(3):
+    result = random.choice(coins)
+    coins.remove(result)
+    items.append(result)
 
 # ゲームループ
 running = True
@@ -399,6 +365,7 @@ score = Score()
 # 残機の設定
 life = Life()
 
+# メインの処理
 while running:
 
     key_lst = pg.key.get_pressed()
@@ -418,7 +385,7 @@ while running:
         if abs(bird.rect.centerx - item["x"]) < item_size and abs(bird.rect.centery - item["y"]) < item_size:
             items.remove(item)
             bird.hyper = 1
-            bird.speed = 5
+            bird.speed = 4
             item_frame = 500
 
     if life.count > 0:
@@ -443,13 +410,7 @@ while running:
     if not coins:
         game_clear = True
         running = False
-    
-    # アイテムの効果時間
-    if bird.hyper == 1:
-        item_frame -= 1
-    if item_frame == 0:
-        bird.hyper = 0
-        bird.speed = 5
+
 
     # 画面の描画
     screen.fill(BLACK)
@@ -465,7 +426,7 @@ while running:
         item_frame -= 1
     if item_frame == 0:
         bird.hyper = 0
-        bird.speed = 3
+        bird.speed = 6
 
     # こうかとんのupdate
     bird.update(key_lst,screen)
