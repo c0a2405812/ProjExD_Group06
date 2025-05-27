@@ -4,7 +4,7 @@ import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# pygameの初期化
+# pgの初期化
 pg.init()
 
 # 色をRGBで定義。RGB: Red, Green, Blueの値を0~255の256段階で表す
@@ -112,6 +112,7 @@ class Bird(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = xy
         self.speed = 5
+        self.hyper = 0
 
     def change_img(self, num: int, screen: pg.Surface):
         """
@@ -216,6 +217,11 @@ for _ in range(3):
 coin_size = 10
 coins = [{"x": random.randint(0, width - coin_size), "y": random.randint(0, height - coin_size)} for _ in range(10)]
 
+# アイテムの設定
+item_size = 15
+item_frame = 0
+items = [{"x": random.randint(0, width - item_size), "y": random.randint(0, height - item_size)} for _ in range(1)]
+
 # ゲームループ
 running = True
 game_clear = False
@@ -261,28 +267,49 @@ while running:
             score.value += 10
 
 
-    # 敵との衝突判定
-    for enemy in pg.sprite.spritecollide(bird, emys, True):        
-        #---------ライフを１減らし、０になったらゲームオーバー---------
-            if life.count == 0:
-                life.value -= 1
-                life.count = fps  # 無敵時間1秒
-                if life.value == 0:
-                    game_over = True
-                    running = False
-            #------------------------------------------------------------
+    # アイテムの収集
+    for item in items[:]:
+        if abs(bird.rect.centerx - item["x"]) < item_size and abs(bird.rect.centery - item["y"]) < item_size:
+            items.remove(item)
+            bird.hyper = 1
+            bird.speed = 10
+            item_frame = 500
 
+    # 敵との衝突判定
+    for enemy in pg.sprite.spritecollide(bird, emys, True): 
+            if bird.hyper == 1:
+                emys.remove(enemy)
+            if bird.hyper == 0:
+                #---------ライフを１減らし、０になったらゲームオーバー---------
+                if life.count == 0:
+                    life.value -= 1
+                    life.count = fps  # 無敵時間1秒
+                    if life.value == 0:
+                        game_over = True
+                        running = False
+                #------------------------------------------------------------
 
     # コインがすべて収集された場合
     if not coins:
         game_clear = True
         running = False
+    
+    # アイテムの効果時間
+    if bird.hyper == 1:
+        item_frame -= 1
+    if item_frame == 0:
+        bird.hyper = 0
+        bird.speed = 5
+
+
 
     # 画面の描画
     win.fill(black)
 
     for coin in coins:
         pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
+    for item in items:
+        pg.draw.rect(win, red, (item["x"], item["y"], item_size, item_size))
     
     # こうかとんのupdate
     bird.update(key_lst,win)
