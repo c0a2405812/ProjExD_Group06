@@ -3,7 +3,11 @@ import random
 import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+import pygame.time
+import pygame.mixer
 
+# Pygameの初期化
+pg.init()
 # pgの初期化
 pg.init()
 
@@ -145,6 +149,40 @@ class Bird(pg.sprite.Sprite):
 
 
 
+
+class MusicPlayer:
+    """
+    BGMを追加するクラス
+    """
+    def __init__(self, intro_file, loop_file):  
+        """
+        BGMをロード、追加する関数
+        """
+        self.intro_file = intro_file
+        self.loop_file = loop_file
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.intro_file)
+        pygame.mixer.music.play()
+
+    def update(self):
+        """
+        BGMをループさせる関数
+        """
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(self.loop_file)
+            pygame.mixer.music.play(-1)
+
+    def stop(self):
+        """
+        BGMを止める関数
+        """
+        pygame.mixer.music.stop()
+
+    def play_once(self, filename):
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.play()
+
+
 def enviroment():
     """
     ステージを定義
@@ -245,6 +283,9 @@ class Life:
 life = Life()
 
 # メインループ
+bgm = MusicPlayer("fig/levelintro.wav", "fig/default.wav")
+pygame.time.wait(5000)
+bgm.update()
 while running:
 
     key_lst = pg.key.get_pressed()
@@ -305,7 +346,7 @@ while running:
 
     # 画面の描画
     win.fill(black)
-
+    #pg.draw.rect(win, yellow, (bird.rect.centerx, bird.rect.centery, bird.size, bird.size))
     for coin in coins:
         pg.draw.rect(win, blue, (coin["x"], coin["y"], coin_size, coin_size))
     for item in items:
@@ -323,14 +364,19 @@ while running:
 
 # ゲームクリアの表示
 if game_clear:
-    win.fill(BLACK)
-    text = font.render("Game Clear", True, WHITE)
-    win.blit(text, text.get_rect(center=(width/2, height/2)))
+    bgm.stop()
+    bgm.play_once("fig/death.wav") 
+    win.fill(black)
+    text = font.render("Game Clear", True, white)
+    text_rect = text.get_rect(center=(width / 2, height / 2))
+    win.blit(text, text_rect)
     pg.display.update()
     pg.time.wait(3000)
 
 # ゲームオーバーの表示
 if game_over:
+    bgm.stop()  # 通常BGMを止める
+    bgm.play_once("fig/death.wav")  # ゲームオーバーBGMを1回だけ再生
     win.fill(black)
     text = font.render("Game Over", True, white)
     text_rect = text.get_rect(center=(width / 2, height / 2))
@@ -338,4 +384,6 @@ if game_over:
     pg.display.update()
     pg.time.wait(3000)
 
+
+pg.quit()
 pg.quit()
