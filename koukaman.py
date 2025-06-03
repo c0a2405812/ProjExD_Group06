@@ -527,7 +527,8 @@ while running:
     # 敵の数が基本数より少ないかつ敵追加イベントが発生しているなら敵追加
     if len(emys) < enemy_num:
         if event.type == Enemy_event:
-            emys.add(Enemy(X_list,Y_list))
+            while len(emys) < enemy_num:
+                emys.add(Enemy(X_list,Y_list))
         else:
             pass
     # 敵のupdate
